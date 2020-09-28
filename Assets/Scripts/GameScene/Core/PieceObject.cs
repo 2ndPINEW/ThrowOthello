@@ -190,7 +190,7 @@ namespace ThrowOthello
             if (value)
             {
                 rigidbody.isKinematic = !value;
-                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             }
             else
             {
