@@ -186,8 +186,17 @@ namespace ThrowOthello
 
         void switchPhysics(bool value)
         {
-            gameObject.GetComponent<MeshCollider>().convex = value;
-            gameObject.GetComponent<Rigidbody>().isKinematic = !value;
+            //gameObject.GetComponent<MeshCollider>().convex = value;
+            if (value)
+            {
+                rigidbody.isKinematic = !value;
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            }
+            else
+            {
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                rigidbody.isKinematic = !value;
+            }
 
         }
     }
