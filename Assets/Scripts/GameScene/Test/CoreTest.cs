@@ -87,11 +87,12 @@ public class CoreTest : MonoBehaviour
 
     public void TestSet()
     {
-        testFunc = new Action[4];
+        testFunc = new Action[5];
         testFunc[0] = Test0;
         testFunc[1] = Test1;
         testFunc[2] = Test2;
         testFunc[3] = Test3;
+        testFunc[4] = Test4;
     }
 
 
@@ -162,6 +163,34 @@ public class CoreTest : MonoBehaviour
         ansSquares[new PositionIndex(4, 4).ToIndex()].color = Color.black;
         ansSquares[new PositionIndex(5, 5).ToIndex()].color = Color.gray;
         ansSquares[new PositionIndex(6, 6).ToIndex()].color = Color.black;
+        ansSquares[new PositionIndex(7, 7).ToIndex()].color = Color.black;
+    }
+
+
+    void Test4()
+    {
+        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(8), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(10), Color.black, true);
+        core.GpecificationGeneratePiece(new PositionIndex(6, 6).ToVector3(10), Color.gray, true);
+        core.GpecificationGeneratePiece(new PositionIndex(5, 5).ToVector3(10), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(8), Color.black, true);
+        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(10), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(10), Color.gray, true);
+        core.GpecificationGeneratePiece(new PositionIndex(2, 2).ToVector3(10), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(8), Color.black, true);
+        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(10), Color.gray, true);
+        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(8), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(10), Color.black, true);
+
+        ansSquares = Factory();
+
+        ansSquares[new PositionIndex(0, 0).ToIndex()].color = Color.black;
+        ansSquares[new PositionIndex(1, 1).ToIndex()].color = Color.gray;
+        ansSquares[new PositionIndex(2, 2).ToIndex()].color = Color.black;
+        ansSquares[new PositionIndex(3, 3).ToIndex()].color = Color.gray;
+        ansSquares[new PositionIndex(4, 4).ToIndex()].color = Color.black;
+        ansSquares[new PositionIndex(5, 5).ToIndex()].color = Color.black;
+        ansSquares[new PositionIndex(6, 6).ToIndex()].color = Color.gray;
         ansSquares[new PositionIndex(7, 7).ToIndex()].color = Color.black;
     }
 }
