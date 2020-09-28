@@ -22,6 +22,21 @@ namespace ThrowOthello
         Rigidbody rigidbody;
 
 
+        public MoveData GetMoveData()
+        {
+            return new MoveData(rigidbody.velocity, rigidbody.angularVelocity, transform.position, transform.rotation);
+        }
+
+
+        public void SetMoveData(MoveData moveData)
+        {
+            rigidbody.velocity = moveData.Velocity;
+            rigidbody.angularVelocity = moveData.AngulerVelocity;
+            transform.position = moveData.Position;
+            transform.rotation = moveData.Rotation;
+        }
+
+
         public Color PieceColor()
         {
             if (-AppSetting.Epsilon < this.transform.forward.y && this.transform.forward.y < AppSetting.Epsilon)
@@ -32,6 +47,7 @@ namespace ThrowOthello
                 return Color.black;
             return Color.gray;
         }
+
 
         public Color RPieceColor()
         {
@@ -198,6 +214,22 @@ namespace ThrowOthello
                 rigidbody.isKinematic = !value;
             }
 
+        }
+    }
+
+    public class MoveData
+    {
+        public Vector3 Velocity;
+        public Vector3 AngulerVelocity;
+        public Vector3 Position;
+        public Quaternion Rotation;
+
+        public MoveData(Vector3 Velocity, Vector3 AngulerVelocity, Vector3 Position, Quaternion Rotation)
+        {
+            this.Velocity = Velocity;
+            this.AngulerVelocity = AngulerVelocity;
+            this.Position = Position;
+            this.Rotation = Rotation;
         }
     }
 }
