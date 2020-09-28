@@ -37,6 +37,12 @@ namespace ThrowOthello
         }
 
 
+        public Field GetFieldData()
+        {
+            return field;
+        }
+
+
         /// <summary>
         /// フィールドのデータを今の盤面の状態にリセットする
         /// </summary>
@@ -167,6 +173,11 @@ namespace ThrowOthello
         }
 
 
+        public void OverwriteSquares(Square[] squares)
+        {
+            Squares = squares;
+        }
+
         //指定したマスにコマを追加
         public void SetPiece(PieceObject pieceObject)
         {
@@ -204,8 +215,14 @@ namespace ThrowOthello
             //緑のマスに当たったら return
             if (Squares[posIndex.ToIndex()].color == Color.green) return;
 
-            //色が一致して隣あっていなかったらreverse
             if (this.Squares[posIndex.ToIndex()].color == color &&
+                isNextSquare(startPosIndex, posIndex))
+            {
+                return;
+            }
+
+                //色が一致して隣あっていなかったらreverse
+                if (this.Squares[posIndex.ToIndex()].color == color &&
                 !isNextSquare(startPosIndex, posIndex))
             {
                 Debug.Log(string.Format("{0},{1} から {2},{3}まで反転", startPosIndex.x, startPosIndex.y, posIndex.x, posIndex.y));
@@ -217,7 +234,7 @@ namespace ThrowOthello
 
         bool isNextSquare(PositionIndex startPosIndex, PositionIndex endPosIndex)
         {
-            if (Mathf.Abs(startPosIndex.x - endPosIndex.x) <= 1 ||
+            if (Mathf.Abs(startPosIndex.x - endPosIndex.x) <= 1 &&
                 Mathf.Abs(startPosIndex.y - endPosIndex.y) <= 1)
                 return true;
             else

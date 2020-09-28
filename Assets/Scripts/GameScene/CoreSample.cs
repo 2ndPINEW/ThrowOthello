@@ -7,6 +7,8 @@ public class CoreSample : MonoBehaviour
 {
     [SerializeField]
     ThrowOthelloCore core;
+    [SerializeField]
+    UIManager ui;
 
     private void Start()
     {
@@ -44,7 +46,7 @@ public class CoreSample : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-            Debug.Log(string.Format("スコア Black:{0}, White:{1}", core.CountScore(Color.black), core.CountScore(Color.white)));
+            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black));
 
             if (core.NumberOfPieces() >= 64)
             {

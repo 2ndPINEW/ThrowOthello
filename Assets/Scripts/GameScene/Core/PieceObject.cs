@@ -188,6 +188,7 @@ namespace ThrowOthello
         {
             gameObject.GetComponent<MeshCollider>().convex = value;
             gameObject.GetComponent<Rigidbody>().isKinematic = !value;
+
         }
     }
 }
