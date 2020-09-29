@@ -10,29 +10,41 @@ public class CoreSample : MonoBehaviour
     [SerializeField]
     UIManager ui;
 
+    bool pieceGenerated = false;
+
+    Color turnColor = Color.black;
+
     private void Start()
     {
         StartCoroutine(test());
     }
 
 
+    public void GeneratePiece(MoveData moveData)
+    {
+        if (pieceGenerated) return;
+
+        if(turnColor == Color.black) moveData.Rotation = Quaternion.Euler(90, 0, 0);
+        if(turnColor == Color.white) moveData.Rotation = Quaternion.Euler(270, 0, 0);
+        core.GeneratePiece(moveData, true);
+        pieceGenerated = true;
+        ui.updateTurnNumber(FieldSetting.NumberOfPieces - core.NumberOfPieces());
+    }
+
+
     IEnumerator test()
     {
+        ui.updateTurnNumber(FieldSetting.NumberOfPieces - core.NumberOfPieces());
+
         while (true)
         {
-            core.GenerateRandomPiece(1);
+            ui.SetTurn(turnColor);
 
-            /*core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(10), Color.white, true);
-            yield return new WaitForSeconds(0.2f);
-            core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(10), Color.black, true);
-            yield return new WaitForSeconds(0.2f);
-            core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(10), Color.gray, true);
-            yield return new WaitForSeconds(2);
-            core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(10), Color.white, true);*/
+            pieceGenerated = false;
 
             while (true)
             {
-                if (core.isAllPieceRedy()) break;
+                if (core.isAllPieceRedy() && pieceGenerated) break;
                 yield return new WaitForSeconds(1);
             }
 
@@ -48,12 +60,13 @@ public class CoreSample : MonoBehaviour
 
             ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black));
 
-            if (core.NumberOfPieces() >= 64)
+            if (core.NumberOfPieces() >= FieldSetting.NumberOfPieces)
             {
                 Debug.Log("終了");
                 yield break;
-                //core.ResetGame();
             }
+            if (turnColor == Color.black) turnColor = Color.white;
+            else turnColor = Color.black;
         }
     }
 }

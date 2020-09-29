@@ -115,14 +115,14 @@ namespace ThrowOthello
         }
 
 
-        public void GpecificationGeneratePiece(Vector3 pos, Color color, bool isLastGeneratePiece)
+        public PieceObject GpecificationGeneratePiece(Vector3 pos, Color color, bool isLastGeneratePiece)
         {
             if (isLastGeneratePiece) GeneratePieceObjects = new PieceObject[0];
 
             var rot = Quaternion.Euler(0, 0, 0);
-            if(color == Color.black) rot = Quaternion.Euler(90, 0, 0);
-            if(color == Color.white) rot = Quaternion.Euler(270, 0, 0);
-            if(color == Color.gray) rot = Quaternion.Euler(0, 0, 0);
+            if (color == Color.black) rot = Quaternion.Euler(90, 0, 0);
+            if (color == Color.white) rot = Quaternion.Euler(270, 0, 0);
+            if (color == Color.gray) rot = Quaternion.Euler(0, 0, 0);
 
             var obj = Instantiate(PieceObjectPrefab, pos, rot);
             Array.Resize(ref AllPieceGameObjects, AllPieceGameObjects.Length + 1);
@@ -130,7 +130,14 @@ namespace ThrowOthello
             Array.Resize(ref GeneratePieceObjects, GeneratePieceObjects.Length + 1);
             AllPieceGameObjects[AllPieceGameObjects.Length - 1] = obj;
             AllPieceObjects[AllPieceObjects.Length - 1] = obj.GetComponent<PieceObject>();
-            GeneratePieceObjects[GeneratePieceObjects.Length - 1] = obj.GetComponent<PieceObject>();
+            return GeneratePieceObjects[GeneratePieceObjects.Length - 1] = obj.GetComponent<PieceObject>();
+        }
+
+
+        public void GeneratePiece(MoveData movedata, bool isLastGeneratePiece)
+        {
+            var pieceObject = GpecificationGeneratePiece(new Position(0, 0).ToVector3(100), Color.gray, isLastGeneratePiece);
+            pieceObject.SetMoveData(movedata);
         }
 
 
