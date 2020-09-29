@@ -9,10 +9,7 @@ public class CoreSample : MonoBehaviour
     ThrowOthelloCore core;
     [SerializeField]
     UIManager ui;
-    [SerializeField]
-    UDPClient uDPClient;
 
-    public int GenerateNumber = 5;
     private void Start()
     {
         StartCoroutine(test());
@@ -23,7 +20,7 @@ public class CoreSample : MonoBehaviour
     {
         while (true)
         {
-            core.GenerateRandomPiece(GenerateNumber);
+            core.GenerateRandomPiece(1);
 
             /*core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(10), Color.white, true);
             yield return new WaitForSeconds(0.2f);
@@ -32,14 +29,6 @@ public class CoreSample : MonoBehaviour
             core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(10), Color.gray, true);
             yield return new WaitForSeconds(2);
             core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(10), Color.white, true);*/
-
-            yield return new WaitForSeconds(0.1f);
-
-            MoveData[] moveDatas = core.GetLastMoveDatas();
-            for(int i = 0; i<moveDatas.Length; i++)
-            {
-                uDPClient.SendPieceData(moveDatas[i]);
-            }
 
             while (true)
             {

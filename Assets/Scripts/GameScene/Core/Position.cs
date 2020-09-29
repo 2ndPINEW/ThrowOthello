@@ -16,7 +16,6 @@ namespace ThrowOthello
         }
     }
 
-
     public class Position
     {
         public float x;
@@ -40,20 +39,6 @@ namespace ThrowOthello
             DOWNRIGHT
         }
     }
-
-
-    public class PieceTransform
-    {
-        public Vector3 Position;
-       public Quaternion Rotation;
-
-        public PieceTransform(Vector3 position, Quaternion rotation)
-        {
-            this.Position = position;
-            this.Rotation = rotation;
-        }
-    }
-
 
     public static class PositionExtensions
     {
