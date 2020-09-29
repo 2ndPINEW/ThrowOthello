@@ -25,17 +25,26 @@ public class UDPClient : MonoBehaviour
     }
 
 
-    public void SendPieceData(MoveData moveData)
+    string pieceTransformsToJson(PieceTransform pieceTransforms)
     {
-        Debug.Log(moveDataToJson(moveData));
-        SendData(string.Format("PieceData:{0}" ,moveDataToJson(moveData)));
+        return JsonUtility.ToJson(pieceTransforms);
     }
 
 
-    public void SendFieldData(MoveData moveData)
+    public void SendPieceData(MoveData moveData)
     {
         Debug.Log(moveDataToJson(moveData));
-        SendData(string.Format("FieldData:{0}", moveDataToJson(moveData)));
+        SendData(string.Format("PieceData:{0}" , moveDataToJson(moveData)));
+    }
+
+
+    public void SendFieldData(PieceTransform[] pieceTransforms)
+    {
+        for (int i = 0; i < pieceTransforms.Length; i++)
+        {
+            Debug.Log(pieceTransformsToJson(pieceTransforms[i]));
+            SendData(string.Format("PieceTransformdData:{0}", pieceTransformsToJson(pieceTransforms[i])));
+        }
     }
 
 

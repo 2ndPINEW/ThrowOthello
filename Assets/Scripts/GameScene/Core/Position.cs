@@ -45,12 +45,14 @@ namespace ThrowOthello
     public class PieceTransform
     {
         public Vector3 Position;
-       public Quaternion Rotation;
+        public Quaternion Rotation;
+        public int index = 0;
 
-        public PieceTransform(Vector3 position, Quaternion rotation)
+        public PieceTransform(Vector3 position, Quaternion rotation, int index)
         {
             this.Position = position;
             this.Rotation = rotation;
+            this.index = index;
         }
     }
 

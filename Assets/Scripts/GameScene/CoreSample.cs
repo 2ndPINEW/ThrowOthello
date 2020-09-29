@@ -47,6 +47,9 @@ public class CoreSample : MonoBehaviour
                 yield return new WaitForSeconds(1);
             }
 
+            uDPClient.SendFieldData(core.GetPieceTransforms());
+
+            yield return new WaitForSeconds(1);
 
             core.fieldInitialize();
 
@@ -62,8 +65,8 @@ public class CoreSample : MonoBehaviour
             if (core.NumberOfPieces() >= 64)
             {
                 Debug.Log("終了");
-                yield break;
-                //core.ResetGame();
+                core.ResetGame();
+                yield return new WaitForSeconds(5);
             }
         }
     }

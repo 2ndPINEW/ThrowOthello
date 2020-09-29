@@ -21,6 +21,9 @@ public class UDPServer : MonoBehaviour
 
 
     string[] moveDataJsons = new string[0];
+    string[] transformDataJsons = new string[0];
+
+    bool PieceTransformDataReceived = false;
 
     private void Start()
     {
@@ -45,9 +48,13 @@ public class UDPServer : MonoBehaviour
             byte[] data = udp.Receive(ref remoteEP);
             string text = Encoding.UTF8.GetString(data);
             Debug.Log(text);
-            if (text.StartsWith("FieldData:"))
+            if (text.StartsWith("PieceTransformdData:"))
             {
-                //core.OverwitePiceTransform();
+                text = text.Replace("PieceTransformdData:", "");
+                PieceTransform pieceTransform = JsonUtility.FromJson<PieceTransform>(text);
+
+                Array.Resize(ref transformDataJsons, transformDataJsons.Length + 1);
+                transformDataJsons[transformDataJsons.Length - 1] = text;
             }
             if (text.StartsWith("PieceData:"))
             {
@@ -63,7 +70,11 @@ public class UDPServer : MonoBehaviour
     {
         while (true)
         {
-            if (core.isAllPieceRedy()) break;
+            if (core.isAllPieceRedy() && PieceTransformDataReceived)
+            {
+                PieceTransformDataReceived = false;
+                break;
+            }
             yield return new WaitForSeconds(1);
         }
 
@@ -78,6 +89,14 @@ public class UDPServer : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black));
+
+        if (core.NumberOfPieces() >= 64)
+        {
+            Debug.Log("終了");
+            core.ResetGame();
+            yield return new WaitForSeconds(5);
+        }
+
     }
 
 
@@ -92,6 +111,16 @@ public class UDPServer : MonoBehaviour
             moveDataJsons = new string[0];
             StartCoroutine(organize());
         }
+
+        if (transformDataJsons.Length > 0)
+        {
+            for(int i = 0; i < transformDataJsons.Length; i++)
+            {
+                core.OverwitePiceTransform(JsonToTransformData(transformDataJsons[i]));
+            }
+            transformDataJsons = new string[0];
+            PieceTransformDataReceived = true;
+        }
     }
 
 
@@ -104,5 +133,11 @@ public class UDPServer : MonoBehaviour
     MoveData JsonToMoveData(string moveData)
     {
         return JsonUtility.FromJson<MoveData>(moveData);
+    }
+
+
+    PieceTransform JsonToTransformData(string transformData)
+    {
+        return JsonUtility.FromJson<PieceTransform>(transformData);
     }
 }

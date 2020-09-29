@@ -162,17 +162,24 @@ namespace ThrowOthello
         }
 
 
-        public void OverwitePiceTransform(PieceTransform[] pieceTransforms)
+        public void OverwitePiceTransform(PieceTransform pieceTransform)
         {
-            if(pieceTransforms.Length != AllPieceGameObjects.Length)
+            if(pieceTransform.index >= AllPieceGameObjects.Length)
             {
                 Debug.LogError("受け取った transformの要素数が一致してない");
             }
-            for(int i = 0; i < pieceTransforms.Length; i++)
+            AllPieceObjects[pieceTransform.index].SetMoveData(new MoveData(Vector3.zero, Vector3.zero, pieceTransform.Position, pieceTransform.Rotation));
+        }
+
+
+        public PieceTransform[] GetPieceTransforms()
+        {
+            PieceTransform[] pieceTransforms = new PieceTransform[AllPieceGameObjects.Length];
+            for (int i = 0; i < pieceTransforms.Length; i++)
             {
-                AllPieceGameObjects[i].transform.position = pieceTransforms[i].Position;
-                AllPieceGameObjects[i].transform.rotation = pieceTransforms[i].Rotation;
+                pieceTransforms[i] = new PieceTransform(AllPieceGameObjects[i].transform.position, AllPieceGameObjects[i].transform.rotation, i);
             }
+            return pieceTransforms;
         }
     }
 
