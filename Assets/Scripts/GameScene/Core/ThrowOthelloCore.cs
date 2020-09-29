@@ -37,9 +37,21 @@ namespace ThrowOthello
         }
 
 
+        //DebugOnly
         public Field GetFieldData()
         {
             return field;
+        }
+
+
+        public MoveData[] GetLastMoveDatas()
+        {
+            MoveData[] moveDatas = new MoveData[GeneratePieceObjects.Length];
+            for(int i = 0; i < GeneratePieceObjects.Length; i++)
+            {
+                moveDatas[i] = GeneratePieceObjects[i].GetMoveData();
+            }
+            return moveDatas;
         }
 
 
@@ -115,7 +127,7 @@ namespace ThrowOthello
         }
 
 
-        public void GpecificationGeneratePiece(Vector3 pos, Color color, bool isLastGeneratePiece)
+        public PieceObject GpecificationGeneratePiece(Vector3 pos, Color color, bool isLastGeneratePiece)
         {
             if (isLastGeneratePiece) GeneratePieceObjects = new PieceObject[0];
 
@@ -130,7 +142,14 @@ namespace ThrowOthello
             Array.Resize(ref GeneratePieceObjects, GeneratePieceObjects.Length + 1);
             AllPieceGameObjects[AllPieceGameObjects.Length - 1] = obj;
             AllPieceObjects[AllPieceObjects.Length - 1] = obj.GetComponent<PieceObject>();
-            GeneratePieceObjects[GeneratePieceObjects.Length - 1] = obj.GetComponent<PieceObject>();
+            return GeneratePieceObjects[GeneratePieceObjects.Length - 1] = obj.GetComponent<PieceObject>();
+        }
+
+
+        public void GeneratePiece(MoveData movedata, bool isLastGeneratePiece)
+        {
+            var pieceObject = GpecificationGeneratePiece(new Position(0, 0).ToVector3(100), Color.gray, isLastGeneratePiece);
+            pieceObject.SetMoveData(movedata);
         }
 
 
@@ -142,6 +161,19 @@ namespace ThrowOthello
             }
         }
 
+
+        public void OverwitePiceTransform(PieceTransform[] pieceTransforms)
+        {
+            if(pieceTransforms.Length != AllPieceGameObjects.Length)
+            {
+                Debug.LogError("受け取った transformの要素数が一致してない");
+            }
+            for(int i = 0; i < pieceTransforms.Length; i++)
+            {
+                AllPieceGameObjects[i].transform.position = pieceTransforms[i].Position;
+                AllPieceGameObjects[i].transform.rotation = pieceTransforms[i].Rotation;
+            }
+        }
     }
 
 
