@@ -10,7 +10,7 @@ using ThrowOthello;
 public class AccelerationScript : MonoBehaviour
 {
     [SerializeField]
-    CoreSample coreSample;
+    SPLocalSample spLocalSample;
 
     private Queue<float> lastXAccels = new Queue<float>();
     private Queue<float> lastYAccels = new Queue<float>();
@@ -22,6 +22,7 @@ public class AccelerationScript : MonoBehaviour
     float xA, yA, zA;
 
     Vector3 vel;
+    float power;
 
     private void Start()
     {
@@ -52,13 +53,21 @@ public class AccelerationScript : MonoBehaviour
         {
             if(Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                coreSample.GeneratePiece(new MoveData((transform.forward * vel.x), Input.gyro.rotationRate, transform.position, transform.rotation));
+                power = calcPower();
+                spLocalSample.GeneratePiece(new MoveData(transform.forward * power, Input.gyro.rotationRate, transform.position, transform.rotation));
             }
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            coreSample.GeneratePiece(new MoveData(transform.forward * 6, Input.gyro.rotationRate, transform.position, transform.rotation));
+            spLocalSample.GeneratePiece(new MoveData(transform.forward * 6, Input.gyro.rotationRate, transform.position, transform.rotation));
         }
+    }
+
+    float calcPower()
+    {
+        //var max = 40 - Mathf.Abs(transform.forward.y * 20);
+        //var k = 20/max;
+        return Mathf.Abs(vel.x);
     }
 
     public Vector3 CalcVelocity()
@@ -93,9 +102,9 @@ public class AccelerationScript : MonoBehaviour
 
     private void OnGUI()
     {
-        var rect = new Rect(30, 30, 500, 50);
+        var rect = new Rect(30, 30, 800, 50);
         GUI.skin.label.fontSize = 30;
-        GUI.Label(rect, string.Format("X={0:F2}, Y={1:F2}, Z={2:F2}",
-            vel.x, vel.y, vel.z));
+        GUI.Label(rect, string.Format("X={0:F2}, Y={1:F2}, Z={2:F2}, {3}, {4}",
+            vel.x, vel.y, vel.z, power, calcPower()));
     }
 }

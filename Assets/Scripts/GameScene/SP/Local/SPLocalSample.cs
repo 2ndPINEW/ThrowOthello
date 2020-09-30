@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ThrowOthello;
 
-public class CoreSample : MonoBehaviour
+public class SPLocalSample : MonoBehaviour
 {
     [SerializeField]
     ThrowOthelloCore core;

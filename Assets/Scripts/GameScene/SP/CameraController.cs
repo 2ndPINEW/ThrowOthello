@@ -19,4 +19,12 @@ public class CameraController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(90, 0, 0) * attitude;
         }
     }
+
+    private void OnGUI()
+    {
+        var rect = new Rect(30, 100, 500, 50);
+        GUI.skin.label.fontSize = 30;
+        GUI.Label(rect, string.Format("X={0:F2}, Y={1:F2}, Z={2:F2}",
+            transform.forward.x, transform.forward.y, transform.forward.z));
+    }
 }
