@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ThrowOthello
+namespace ThrowOthello.Core.Settings
 {
     public class FieldSetting
     {
@@ -30,6 +30,19 @@ namespace ThrowOthello
         //駒をひっくり返すスピード
         public const int PieceReverseSpeed = 4;
 
+        //コマが立っているか判定するときの角度
         public const float Epsilon = 0.1f;
+
+        //白陣営のカメラ
+        public Vector3 CameraPositionWhite = new Vector3(-6.8f, 6.8f, 0f);
+        public Vector3 CameraAngleWhite = new Vector3(0f, 90f, 0f);
+
+        //黒陣営のカメラ
+        public Vector3 CameraPositionBlack = new Vector3(6.8f, 6.8f, 0f);
+        public Vector3 CameraAngleBlack = new Vector3(0f, -90f, 0f);
+
+        //スコアボードのカメラ
+        public Vector3 CameraPositionScore = new Vector3(0f, 4.28f, 0f);
+        public Vector3 CameraAngleScore = new Vector3(0f, 180f, 0f);
     }
 }

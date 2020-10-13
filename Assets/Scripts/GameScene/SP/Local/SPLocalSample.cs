@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ThrowOthello;
+using ThrowOthello.Core;
+using ThrowOthello.Core.Settings;
 
 public class SPLocalSample : MonoBehaviour
 {

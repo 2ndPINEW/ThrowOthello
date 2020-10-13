@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ThrowOthello;
+using ThrowOthello.Core;
+using ThrowOthello.Core.Settings;
 using System;
 
 public class CoreTest : MonoBehaviour

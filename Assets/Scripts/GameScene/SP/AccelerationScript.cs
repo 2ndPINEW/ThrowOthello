@@ -5,12 +5,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using ThrowOthello;
+using ThrowOthello.Core;
+using System.Collections;
 
 public class AccelerationScript : MonoBehaviour
 {
     [SerializeField]
     SPLocalSample spLocalSample;
+
+    private Queue<float> aveXAccels = new Queue<float>();
+    private Queue<float> aveYAccels = new Queue<float>();
+    private Queue<float> aveZAccels = new Queue<float>();
 
     private Queue<float> lastXAccels = new Queue<float>();
     private Queue<float> lastYAccels = new Queue<float>();
@@ -21,8 +26,11 @@ public class AccelerationScript : MonoBehaviour
 
     float xA, yA, zA;
 
+    Vector3 aveVel;
     Vector3 vel;
     float power;
+
+    float tmp_startat = 0;
 
     private void Start()
     {
@@ -32,6 +40,13 @@ public class AccelerationScript : MonoBehaviour
             lastYAccels.Enqueue(0);
             lastZAccels.Enqueue(0);
         }
+
+        for (int i = 0; i < ACCEL_NUM * 2; i++)
+        {
+            aveXAccels.Enqueue(0);
+            aveYAccels.Enqueue(0);
+            aveZAccels.Enqueue(0);
+        }
     }
 
     private void Update()
@@ -40,6 +55,13 @@ public class AccelerationScript : MonoBehaviour
         yA = Input.acceleration.y;
         zA = Input.acceleration.z;
 
+        aveXAccels.Dequeue();
+        aveXAccels.Enqueue(lastXAccels.Peek());
+        aveYAccels.Dequeue();
+        aveYAccels.Enqueue(lastYAccels.Peek());
+        aveZAccels.Dequeue();
+        aveZAccels.Enqueue(lastZAccels.Peek());
+
         lastXAccels.Dequeue();
         lastXAccels.Enqueue(xA);
         lastYAccels.Dequeue();
@@ -47,14 +69,15 @@ public class AccelerationScript : MonoBehaviour
         lastZAccels.Dequeue();
         lastZAccels.Enqueue(zA);
 
-        var vel = CalcVelocity();
+        aveVel = CalcVelocity(aveXAccels, aveYAccels, aveZAccels);
+        vel = CalcVelocity(lastXAccels, lastYAccels, lastZAccels);
 
         if (Input.touchCount > 0)
         {
             if(Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                power = calcPower();
-                spLocalSample.GeneratePiece(new MoveData(transform.forward * power, Input.gyro.rotationRate, transform.position, transform.rotation));
+                StartCoroutine(PieceGenerate());
+                //tmp_startat = Camera.main.GetComponent<CameraController>().ResetCamera();
             }
         }
         if (Input.GetKeyDown(KeyCode.A))
@@ -63,14 +86,20 @@ public class AccelerationScript : MonoBehaviour
         }
     }
 
-    float calcPower()
+    IEnumerator PieceGenerate()
     {
-        //var max = 40 - Mathf.Abs(transform.forward.y * 20);
-        //var k = 20/max;
-        return Mathf.Abs(vel.x);
+        yield return new WaitForSeconds(0.15f);
+        Vector3 power = calcPower();
+        var lotation = new Vector3(Input.gyro.rotationRate.z, Input.gyro.rotationRate.y, Input.gyro.rotationRate.x);
+        spLocalSample.GeneratePiece(new MoveData(transform.forward * power.x + transform.up * power.y, lotation, transform.position, transform.rotation));
     }
 
-    public Vector3 CalcVelocity()
+    Vector3 calcPower()
+    {
+        return new Vector3( Mathf.Abs(aveVel.x - vel.x), Mathf.Abs(aveVel.y - vel.y), Mathf.Abs(aveVel.z - vel.y));
+    }
+
+    public Vector3 CalcVelocity(Queue<float> lastXAccels, Queue<float> lastYAccels, Queue<float> lastZAccels)
     {
         float xVelocity;
         float yVelocity;
@@ -96,7 +125,6 @@ public class AccelerationScript : MonoBehaviour
         zVelocity = xVariance * Mathf.Sign(lastXAccels.Last()) * 20;
 
         var vec = new Vector3(xVelocity, yVelocity, zVelocity);
-        vel = vec;
         return vec;
     }
 
@@ -104,7 +132,7 @@ public class AccelerationScript : MonoBehaviour
     {
         var rect = new Rect(30, 30, 800, 50);
         GUI.skin.label.fontSize = 30;
-        GUI.Label(rect, string.Format("X={0:F2}, Y={1:F2}, Z={2:F2}, {3}, {4}",
-            vel.x, vel.y, vel.z, power, calcPower()));
+        GUI.Label(rect, string.Format("X={0:F2}, Y={1:F2}, Z={2:F2}, {3}, {4}, {5}",
+            vel.x, vel.y, vel.z, power, calcPower().x, tmp_startat));
     }
 }

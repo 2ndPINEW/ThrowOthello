@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ThrowOthello.Core.Settings;
 
-namespace ThrowOthello
+namespace ThrowOthello.Core
 {
     public class PositionIndex
     {

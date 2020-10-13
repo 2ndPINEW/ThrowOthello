@@ -3,6 +3,9 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
+
+    float StartAttitude = 0;
+
     void Start()
     {
         Input.gyro.enabled = true;
@@ -16,7 +19,7 @@ public class CameraController : MonoBehaviour
             Quaternion attitude = Input.gyro.attitude;
             attitude.x *= -1;
             attitude.y *= -1;
-            transform.localRotation = Quaternion.Euler(90, 0, 0) * attitude;
+            transform.localRotation = Quaternion.Euler(90, StartAttitude, 0) * attitude;
         }
     }
 
@@ -26,5 +29,13 @@ public class CameraController : MonoBehaviour
         GUI.skin.label.fontSize = 30;
         GUI.Label(rect, string.Format("X={0:F2}, Y={1:F2}, Z={2:F2}",
             transform.forward.x, transform.forward.y, transform.forward.z));
+    }
+
+    public float ResetCamera()
+    {
+        StartAttitude = Input.gyro.attitude.eulerAngles.x;
+        //60~280
+        //0~60, 280~360
+        return StartAttitude;
     }
 }
