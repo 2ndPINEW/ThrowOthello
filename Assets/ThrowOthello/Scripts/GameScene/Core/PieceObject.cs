@@ -9,8 +9,10 @@ namespace ThrowOthello.Core
     {
 
         public int PileIndex = 0;
+        public string id;
+        public string playerId = "";
 
-        bool systemOperating = false;
+        public bool systemOperating = false;
         bool positionSmoothMoving = false;
         bool rotationSmoothMoving = false;
 
@@ -28,9 +30,10 @@ namespace ThrowOthello.Core
             return new MoveData(rigidbody.velocity, rigidbody.angularVelocity, transform.position, transform.rotation);
         }
 
-
-        public void SetMoveData(MoveData moveData)
+        // isKinematicがtrueなら物理エンジン無視
+        public void SetMoveData(MoveData moveData, bool isKinematic)
         {
+            switchPhysics(!isKinematic);
             rigidbody.velocity = moveData.Velocity;
             rigidbody.angularVelocity = moveData.AngulerVelocity;
             transform.position = moveData.Position;
@@ -108,6 +111,12 @@ namespace ThrowOthello.Core
         }
 
 
+        public void StartForceMove(Vector3 position, Quaternion rotation)
+        {
+            if (systemOperating) return;
+            StartCoroutine(ForceMove(position, rotation));
+        }
+
         public void StartOrganize(PositionIndex positionIndex)
         {
             if (systemOperating) return;
@@ -172,6 +181,19 @@ namespace ThrowOthello.Core
             systemOperating = false;
         }
 
+        IEnumerator ForceMove(Vector3 position, Quaternion rotation)
+        {
+            systemOperating = true;
+            switchPhysics(false);
+            StartCoroutine(forcePositionOrganize(position));
+            //StartCoroutine(forceRotationOrganize(rotation));
+            this.transform.rotation = rotation;
+            yield return new WaitForSeconds(1f);
+            switchPhysics(true);
+            yield return new WaitForSeconds(0.5f);
+            systemOperating = false;
+        }
+
 
         IEnumerator rotationOrganize(Color color)
         {
@@ -191,11 +213,27 @@ namespace ThrowOthello.Core
             rotationSmoothMoving = false;
         }
 
+        IEnumerator forceRotationOrganize(Quaternion rotation)
+        {
+            rotationSmoothMoving = true;
+            moveTargetRotation = Quaternion.ToEulerAngles(rotation);
+            yield return new WaitForSeconds(1);
+            rotationSmoothMoving = false;
+        }
+
 
         IEnumerator positionOrganize(PositionIndex positionIndex)
         {
             positionSmoothMoving = true;
             moveTargetPosition = positionIndex.ToPosition().ToVector3((PileIndex+1)*FieldSetting.PieceMoveHeight);
+            yield return new WaitForSeconds(1);
+            positionSmoothMoving = false;
+        }
+
+        IEnumerator forcePositionOrganize(Vector3 position)
+        {
+            positionSmoothMoving = true;
+            moveTargetPosition = position;
             yield return new WaitForSeconds(1);
             positionSmoothMoving = false;
         }
@@ -218,6 +256,7 @@ namespace ThrowOthello.Core
         }
     }
 
+    [System.Serializable]
     public class MoveData
     {
         public Vector3 Velocity;

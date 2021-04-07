@@ -1,36 +1,85 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using ThrowOthello;
+using System.Net.Sockets;
+using System.Threading;
+using System.Text;
+using System.Net;
+using System;
 using ThrowOthello.Core;
 using ThrowOthello.Core.Settings;
-using UnityEngine;
+using ThrowOthello.Core.Network;
 
+//クライアント
 public class RandomGenerateTestClient : MonoBehaviour
 {
+
 
     [SerializeField]
     ThrowOthelloCore core;
     [SerializeField]
     UIManager ui;
 
+    public int LOCA_LPORT;
+    private UdpClient udp;
+    Thread thread;
+
+
     bool pieceGenerated = false;
+    bool forceOrganized = false;
 
     Color turnColor = Color.black;
 
-    public void GeneratePiece(MoveData moveData)
-    {
-        if (pieceGenerated) return;
+    string[] allDataJsons = new string[0];
+    NetworkCore networkCore = new NetworkCore();
 
-        if (turnColor == Color.black) moveData.Rotation = Quaternion.Euler(90, 0, 0);
-        if (turnColor == Color.white) moveData.Rotation = Quaternion.Euler(270, 0, 0);
-        core.GeneratePiece(moveData, true);
-        pieceGenerated = true;
-        ui.updateTurnNumber(FieldSetting.NumberOfPieces - core.NumberOfPieces());
+    private void Start()
+    {
+        udp = new UdpClient(LOCA_LPORT);
+        udp.Client.ReceiveTimeout = 0;
+        thread = new Thread(new ThreadStart(ThreadMethod));
+        thread.Start();
+        StartCoroutine(test());
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void OnApplicationQuit()
     {
-        StartCoroutine(test());
+        thread.Abort();
+    }
+
+
+    private void ThreadMethod()
+    {
+        while (true)
+        {
+            IPEndPoint remoteEP = null;
+            byte[] data = udp.Receive(ref remoteEP);
+            string text = Encoding.UTF8.GetString(data);
+            Array.Resize(ref allDataJsons, allDataJsons.Length + 1);
+            allDataJsons[allDataJsons.Length - 1] = text;
+        }
+    }
+
+    private void Update()
+    {
+        if (allDataJsons.Length > 0)
+        {
+            for (int i = 0; i < allDataJsons.Length; i++)
+            {
+                var tmp = networkCore.JsonToAllData(allDataJsons[i]);
+                core.OverWriteAllPiecePositionAndRotation(tmp.PiecePositionAndRotationListObject);
+                ui.SetTurn(tmp.muchInfo.turnColor);
+                ui.UpdateScoreBoard(tmp.muchInfo.whiteScore, tmp.muchInfo.blackScore, false);
+
+            }
+            allDataJsons = new string[0];
+        }
+    }
+
+    MoveData JsonToMoveData(string moveData)
+    {
+        return JsonUtility.FromJson<MoveData>(moveData);
     }
 
 
@@ -43,19 +92,19 @@ public class RandomGenerateTestClient : MonoBehaviour
             ui.SetTurn(turnColor);
 
             pieceGenerated = false;
-
-            Vector3 velocity = new Vector3(Random.Range(5f, 15f), Random.Range(-5f, 0f), Random.Range(-5f, 5f));
-            Vector3 angularVelocity = new Vector3(Random.Range(0f, 20f), Random.Range(0f, 20f), Random.Range(-20f, 20f));
-            Quaternion quaternion = Quaternion.Euler(Random.Range(0f, 360f), Random.Range(0f, 360f), Random.Range(0f, 360f));
-            GeneratePiece(new MoveData(velocity, angularVelocity, Camera.main.transform.position, quaternion));
+            forceOrganized = false;
 
             while (true)
             {
-                if (core.isAllPieceRedy() && pieceGenerated) break;
-                yield return new WaitForSeconds(1);
+                if (pieceGenerated && forceOrganized) break;
+                yield return new WaitForSeconds(0.1f);
             }
 
+            Debug.Log("break");
 
+            yield return new WaitForSeconds(1.6f);
+
+            //ここでコマの全座標調整
             core.fieldInitialize();
 
             core.FieldOrgnize();
@@ -65,7 +114,7 @@ public class RandomGenerateTestClient : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black));
+            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black), false);
 
             if (core.NumberOfPieces() >= FieldSetting.NumberOfPieces)
             {
@@ -78,4 +127,5 @@ public class RandomGenerateTestClient : MonoBehaviour
             else turnColor = Color.black;
         }
     }
+
 }

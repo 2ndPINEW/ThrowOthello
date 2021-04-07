@@ -44,8 +44,10 @@ public class CoreTest : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black));
+            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black), false);
             core.fieldInitialize();
+
+            Debug.Log(core.allPiecePositionAndRotation());
 
             if (CompareFieldSquares(core.GetFieldData().Squares, ansSquares))
             {
@@ -99,10 +101,10 @@ public class CoreTest : MonoBehaviour
 
     void Test0()
     {
-        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(1), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(1), Color.gray, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(1), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(1), Color.gray, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, "", true);
 
         ansSquares =  Factory();
 
@@ -114,10 +116,10 @@ public class CoreTest : MonoBehaviour
 
     void Test1()
     {
-        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(1), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(1), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, "", true);
 
         ansSquares = Factory();
 
@@ -129,11 +131,11 @@ public class CoreTest : MonoBehaviour
 
     void Test2()
     {
-        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(0.5f), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(1), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(1), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(0.5f), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 6).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 5).ToVector3(1), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 4).ToVector3(1), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, "", true);
 
         ansSquares = Factory();
 
@@ -145,15 +147,15 @@ public class CoreTest : MonoBehaviour
 
     void Test3()
     {
-        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(1), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(2, 2).ToVector3(1), Color.gray, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(0.5f), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(5, 5).ToVector3(1), Color.gray, true);
-        core.GpecificationGeneratePiece(new PositionIndex(6, 6).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(1), Color.black, true);
+        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(1), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(2, 2).ToVector3(1), Color.gray, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(0.5f), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(5, 5).ToVector3(1), Color.gray, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(6, 6).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(1), Color.black, "", true);
 
         ansSquares = Factory();
 
@@ -170,18 +172,18 @@ public class CoreTest : MonoBehaviour
 
     void Test4()
     {
-        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(0.5f), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(1), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(6, 6).ToVector3(1), Color.gray, true);
-        core.GpecificationGeneratePiece(new PositionIndex(5, 5).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(0.5f), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.gray, true);
-        core.GpecificationGeneratePiece(new PositionIndex(2, 2).ToVector3(1), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(0.5f), Color.black, true);
-        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(1), Color.gray, true);
-        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(0.5f), Color.white, true);
-        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(1), Color.black, true);
+        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(0.5f), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(7, 7).ToVector3(1), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(6, 6).ToVector3(1), Color.gray, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(5, 5).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(0.5f), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(4, 4).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(3, 3).ToVector3(1), Color.gray, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(2, 2).ToVector3(1), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(0.5f), Color.black, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(1, 1).ToVector3(1), Color.gray, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(0.5f), Color.white, "", true);
+        core.GpecificationGeneratePiece(new PositionIndex(0, 0).ToVector3(1), Color.black, "", true);
 
         ansSquares = Factory();
 

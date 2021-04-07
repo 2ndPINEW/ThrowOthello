@@ -14,9 +14,16 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Animator turnAnimator;
 
-    public void UpdateScoreBoard(int whiteScore, int blackScore)
+    // isSetTurnTriangleがtrueならスコアの高い方にやじるしが傾く
+    public void UpdateScoreBoard(int whiteScore, int blackScore, bool isSetTurnTriangle)
     {
         scoreBoard.UpdateScoreText(blackScore, whiteScore);
+
+        if (!isSetTurnTriangle) return;
+
+        if (blackScore > whiteScore) SetTurn(Color.black);
+        else if (blackScore < whiteScore) SetTurn(Color.white);
+        else SetTurn(Color.gray);
     }
 
     public void SetTurn(Color color)

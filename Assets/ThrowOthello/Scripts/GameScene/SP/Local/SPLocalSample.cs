@@ -27,7 +27,7 @@ public class SPLocalSample : MonoBehaviour
 
         if(turnColor == Color.black) moveData.Rotation = Quaternion.Euler(90, 0, 0);
         if(turnColor == Color.white) moveData.Rotation = Quaternion.Euler(270, 0, 0);
-        core.GeneratePiece(moveData, true);
+        core.GeneratePiece(moveData, "", true);
         pieceGenerated = true;
         ui.updateTurnNumber(FieldSetting.NumberOfPieces - core.NumberOfPieces());
     }
@@ -59,7 +59,7 @@ public class SPLocalSample : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
-            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black));
+            ui.UpdateScoreBoard(core.CountScore(Color.white), core.CountScore(Color.black), false);
 
             if (core.NumberOfPieces() >= FieldSetting.NumberOfPieces)
             {

@@ -727,6 +727,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   core: {fileID: 803924593}
   ui: {fileID: 803924592}
+  host: localhost
+  port: 5098
+--- !u!114 &803924596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 803924591}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9665e351a2475247af55da6960f14aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  core: {fileID: 803924593}
+  ui: {fileID: 803924592}
+  LOCA_LPORT: 5098
 --- !u!1 &853560720
 GameObject:
   m_ObjectHideFlags: 0

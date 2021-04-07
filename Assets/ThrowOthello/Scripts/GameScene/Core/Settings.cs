@@ -27,8 +27,19 @@ namespace ThrowOthello.Core.Settings
         public const float PieceMoveSmoothTime = 0.1f;
         //駒の回転をリセットするときののSmoothtime
         public const float PieceRotateSmoothTime = 0.1f;
+
         //駒をひっくり返すスピード
+# if UNITY_EDITOR
+        public const int PieceReverseSpeed = 2;
+#elif UNITY_ANDROID
+        public const int PieceReverseSpeed = 10;
+#elif UNITY_IOS
+        public const int PieceReverseSpeed = 10;
+#elif UNITY_STANDALONE_WIN
+        public const int PieceReverseSpeed = 2;
+#else
         public const int PieceReverseSpeed = 4;
+#endif
 
         //コマが立っているか判定するときの角度
         public const float Epsilon = 0.1f;
