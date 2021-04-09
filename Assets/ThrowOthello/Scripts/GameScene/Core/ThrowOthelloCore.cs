@@ -69,6 +69,7 @@ namespace ThrowOthello.Core
                 if (field.OthelloCHK(GeneratePieceObjects[i]))
                     hasOthello = true;
             }
+            GeneratePieceObjects = new PieceObject[0];
             return hasOthello;
         }
 
@@ -174,6 +175,7 @@ namespace ThrowOthello.Core
                 o.PiecePositionAndRotations.Add(tmp);
             }
             o.totalPieces = AllPieceObjects.Length;
+            o.hasAllPiece = true;
             return JsonUtility.ToJson(o);
         }
 
@@ -188,6 +190,7 @@ namespace ThrowOthello.Core
                 tmp.id = i.ToString();
                 o.PiecePositionAndRotations.Add(tmp);
             }
+            o.hasAllPiece = true;
             o.totalPieces = AllPieceObjects.Length;
             return o;
         }
@@ -206,10 +209,6 @@ namespace ThrowOthello.Core
                     tmp.id = i.ToString();
                     o.PiecePositionAndRotations.Add(tmp);
                 }
-                else
-                {
-                    Debug.Log("skip");
-                }
             }
             o.totalPieces = AllPieceObjects.Length;
             return o;
@@ -218,7 +217,7 @@ namespace ThrowOthello.Core
         public void OverWriteAllPiecePositionAndRotation(string jsonData)
         {
             PiecePositionAndRotationListObject o = JsonUtility.FromJson<PiecePositionAndRotationListObject>(jsonData);
-            if (AllPieceGameObjects.Length > o.totalPieces)
+            if (AllPieceGameObjects.Length > o.totalPieces || o.hasAllPiece)
             {
                 ResetGame();
             }
@@ -233,20 +232,26 @@ namespace ThrowOthello.Core
             }
         }
 
-        public void OverWriteAllPiecePositionAndRotation(PiecePositionAndRotationListObject piecePositionAndRotationObject)
+        public bool OverWriteAllPiecePositionAndRotation(PiecePositionAndRotationListObject piecePositionAndRotationObject)
         {
-            if (AllPieceGameObjects.Length > piecePositionAndRotationObject.totalPieces)
-            {
-                ResetGame();
-            }
-            foreach (PiecePositionAndRotation tmp in piecePositionAndRotationObject.PiecePositionAndRotations)
-            {
-                if (AllPieceObjects.Length <= int.Parse(tmp.id))
+            try{
+                if (AllPieceGameObjects.Length > piecePositionAndRotationObject.totalPieces)
                 {
-                    //駒を新規で生成する(OverWriteされる側は判定しないし全部true
-                    GeneratePiece(tmp.moveData, "", true);
+                    ResetGame();
                 }
-                AllPieceObjects[int.Parse(tmp.id)].SetMoveData(tmp.moveData, tmp.isKinematic);
+                foreach (PiecePositionAndRotation tmp in piecePositionAndRotationObject.PiecePositionAndRotations)
+                {
+                    if (AllPieceObjects.Length <= int.Parse(tmp.id))
+                    {
+                        //駒を新規で生成する(OverWriteされる側は判定しないし全部true
+                        GeneratePiece(tmp.moveData, "", true);
+                    }
+                    AllPieceObjects[int.Parse(tmp.id)].SetMoveData(tmp.moveData, tmp.isKinematic);
+                }
+                return false;
+            }
+            catch{
+                return true;
             }
         }
     }

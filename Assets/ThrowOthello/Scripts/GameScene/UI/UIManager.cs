@@ -14,6 +14,21 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Animator turnAnimator;
 
+    [SerializeField]
+    GameObject ThrowButton;
+
+    [SerializeField]
+    GameObject WinImage;
+
+    [SerializeField]
+    GameObject LoseImage;
+
+    [SerializeField]
+    GameObject DrawImage;
+
+    [SerializeField]
+    Celemony celemony;
+
     // isSetTurnTriangleがtrueならスコアの高い方にやじるしが傾く
     public void UpdateScoreBoard(int whiteScore, int blackScore, bool isSetTurnTriangle)
     {
@@ -36,5 +51,30 @@ public class UIManager : MonoBehaviour
     public void updateTurnNumber(int number)
     {
         turnNumberText.text = string.Format("{0:D2}", number);
+    }
+
+    public void isShowThrowButton(bool value)
+    {
+        ThrowButton.SetActive(value);
+    }
+
+    public void Win()
+    {
+        isShowThrowButton(false);
+        WinImage.SetActive(true);
+        celemony.triger();
+    }
+
+    public void Lose()
+    {
+        isShowThrowButton(false);
+        LoseImage.SetActive(true);
+    }
+
+    public void Draw()
+    {
+        isShowThrowButton(false);
+        DrawImage.SetActive(true);
+        celemony.triger();
     }
 }
