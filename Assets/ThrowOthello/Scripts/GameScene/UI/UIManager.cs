@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
+    SoundManager soundManager;
+
+    [SerializeField]
     ScoreBoard scoreBoard;
 
     [SerializeField]
@@ -28,6 +31,24 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     Celemony celemony;
+
+    [SerializeField]
+    GameObject EnemyNameArea;
+    [SerializeField]
+    Text EnemyNameText;
+
+    [SerializeField]
+    GameObject MuchingWaiting;
+
+    [SerializeField]
+    GameObject SceneMoveCanvas;
+    [SerializeField]
+    Animator SceneMoveAnimator;
+
+    private void Start()
+    {
+        SceneChangeClose();
+    }
 
     // isSetTurnTriangleがtrueならスコアの高い方にやじるしが傾く
     public void UpdateScoreBoard(int whiteScore, int blackScore, bool isSetTurnTriangle)
@@ -67,14 +88,54 @@ public class UIManager : MonoBehaviour
 
     public void Lose()
     {
+        soundManager.PlaySound(SoundManager.SoundType.LOSE);
         isShowThrowButton(false);
         LoseImage.SetActive(true);
     }
 
     public void Draw()
     {
+        soundManager.PlaySound(SoundManager.SoundType.LOSE);
         isShowThrowButton(false);
         DrawImage.SetActive(true);
-        celemony.triger();
+    }
+
+    public void ShowEnemyName(string name)
+    {
+        soundManager.PlaySound(SoundManager.SoundType.MUCHED);
+        EnemyNameArea.SetActive(true);
+        EnemyNameText.text = "VS: " + name;
+        StartCoroutine(closeName());
+    }
+
+    IEnumerator closeName()
+    {
+        yield return new WaitForSeconds(5);
+        EnemyNameArea.SetActive(false);
+        isShowThrowButton(true);
+        soundManager.PlaySound(SoundManager.SoundType.GAME_START);
+    }
+
+    public void CloseMuchWaitingDialog()
+    {
+        MuchingWaiting.SetActive(false);
+    }
+
+    public void SceneChangeOpen()
+    {
+        SceneMoveCanvas.SetActive(true);
+        SceneMoveAnimator.SetTrigger("Open");
+    }
+
+    public void SceneChangeClose()
+    {
+        SceneMoveAnimator.SetTrigger("Close");
+        StartCoroutine(SceneChangeCloseWait());
+    }
+
+    IEnumerator SceneChangeCloseWait()
+    {
+        yield return new WaitForSeconds(0.4f);
+        SceneMoveCanvas.SetActive(false);
     }
 }

@@ -11,11 +11,25 @@ public class Celemony : MonoBehaviour
     [SerializeField]
     GameObject targets3;
 
+    [SerializeField]
+    SoundManager soundManager;
+
+
     public void triger()
     {
+        StartCoroutine(Pafu());
         StartCoroutine(loop());
         StartCoroutine(loop2());
         StartCoroutine(loop3());
+    }
+    IEnumerator Pafu()
+    {
+        soundManager.PlaySound(SoundManager.SoundType.RESULT_PUF);
+        yield return new WaitForSeconds(0.2f);
+        soundManager.PlaySound(SoundManager.SoundType.RESULT_PUF);
+        yield return new WaitForSeconds(0.2f);
+        soundManager.PlaySound(SoundManager.SoundType.RESULT_PUF);
+        yield return new WaitForSeconds(0.2f);
     }
 
     IEnumerator loop()
@@ -29,10 +43,10 @@ public class Celemony : MonoBehaviour
 
     IEnumerator loop2()
     {
-        for (int i = 0; i < targets.Length; i++)
+        for (int i = 0; i < targets2.Length; i++)
         {
             targets2[i].SetActive(true);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 

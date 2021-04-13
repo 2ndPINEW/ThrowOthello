@@ -19,8 +19,12 @@ public class UDPServer : MonoBehaviour
     UIManager ui;
     [SerializeField]
     UDPClient uDPClient;
+    [SerializeField]
+    SoundManager soundManager;
 
     public bool isHost;
+
+    bool isGameEnd = false;
 
     public int LOCA_LPORT;
     private UdpClient udp;
@@ -70,6 +74,7 @@ public class UDPServer : MonoBehaviour
             {
                 targetip = remoteEP.Address.ToString();
                 name = text.Replace("TH+IP_FOUND_", "");
+                Debug.Log(text);
             }
             else
             {
@@ -105,7 +110,14 @@ public class UDPServer : MonoBehaviour
                 }
                 else
                 {
-                    SyncAllData(tmp);
+                    if (tmp == "TH+GENERATED")
+                    {
+                        soundManager.PlaySound(SoundManager.SoundType.THROW);
+                    }
+                    else
+                    {
+                        SyncAllData(tmp);
+                    }
                 }
 
             }
@@ -121,6 +133,7 @@ public class UDPServer : MonoBehaviour
 
     void SyncAllData(string data)
     {
+        if (isGameEnd) return;
         var tmp = networkCore.JsonToAllData(data);
         if (core.OverWriteAllPiecePositionAndRotation(tmp.PiecePositionAndRotationListObject))
         {
@@ -131,6 +144,7 @@ public class UDPServer : MonoBehaviour
         ui.UpdateScoreBoard(tmp.muchInfo.whiteScore, tmp.muchInfo.blackScore, false);
         if (tmp.muchInfo.isGameEnd)
         {
+            isGameEnd = true;
             if (tmp.muchInfo.whiteScore > tmp.muchInfo.blackScore) ui.Win();
             if (tmp.muchInfo.whiteScore < tmp.muchInfo.blackScore) ui.Lose();
             if (tmp.muchInfo.whiteScore == tmp.muchInfo.blackScore) ui.Draw();

@@ -17,8 +17,13 @@ public class UDPClient : MonoBehaviour
     UIManager ui;
     [SerializeField]
     UDPServer uDPServer;
+    [SerializeField]
+    SoundManager soundManager;
 
     public bool isHost;
+    public string playerName;
+    public int TermsEndTurn;
+    public int TermsEndScoreDifference;
 
     public int port;
     private UdpClient client;
@@ -53,10 +58,10 @@ public class UDPClient : MonoBehaviour
             Debug.Log("Beacon");
             bclient = new UdpClient();
             bclient.Connect(IPAddress.Broadcast, port);
-            byte[] dgram = Encoding.UTF8.GetBytes("TH+IP_FOUND_");
+            byte[] dgram = Encoding.UTF8.GetBytes("TH+IP_FOUND_" + playerName);
             bclient.Send(dgram, dgram.Length);
             bclient.Close();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -66,6 +71,8 @@ public class UDPClient : MonoBehaviour
         client = new UdpClient();
         client.Connect(ip, port);
         SendData("TH+CONNECTED");
+        ui.CloseMuchWaitingDialog();
+        ui.ShowEnemyName(name);
 
         if (isHost)
         {
@@ -94,11 +101,10 @@ public class UDPClient : MonoBehaviour
         GenerateRequestPieceData generateRequestPieceData = new GenerateRequestPieceData();
         generateRequestPieceData.moveData = moveData;
         generateRequestPieceData.playerId = "";
-        if (!isHost)
-        {
-            requestGeneratePiece(generateRequestPieceData);
-        }
+        if (!isHost) requestGeneratePiece(generateRequestPieceData);
         if (!muchInfo.canGeneratePiece) return;
+        soundManager.PlaySound(SoundManager.SoundType.THROW);
+        if (isHost) SendData("TH+GENERATED");
         core.GeneratePiece(moveData, "", true);
         muchInfo.canGeneratePiece = false;
     }
@@ -112,7 +118,8 @@ public class UDPClient : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.04f);
+            if (core.isAllPieceRedy()) yield return new WaitForSeconds(0.05f);
+            else yield return new WaitForSeconds(0.02f);
             muchInfo.muchId = "";
             muchInfo.whiteRemainingNumberOfPieces = 0;
             muchInfo.blackRemainingNumberOfPieces = 0;
@@ -130,12 +137,6 @@ public class UDPClient : MonoBehaviour
         {
             ui.SetTurn(muchInfo.turnColor);
             muchInfo.canGeneratePiece = true;
-
-            /*Vector3 velocity = new Vector3(Random.Range(5f, 15f), Random.Range(-5f, 0f), Random.Range(-5f, 5f));
-            Vector3 angularVelocity = new Vector3(Random.Range(0f, 20f), Random.Range(0f, 20f), Random.Range(-20f, 20f));
-            Quaternion quaternion = Quaternion.Euler(Random.Range(0f, 360f), Random.Range(0f, 360f), Random.Range(0f, 360f));
-            MoveData moveData = new MoveData(velocity, angularVelocity, Camera.main.transform.position, quaternion);
-            core.GeneratePiece(moveData, "", true);*/
 
             while (true)
             {
@@ -158,7 +159,7 @@ public class UDPClient : MonoBehaviour
             muchInfo.blackScore = core.CountScore(Color.black);
             ui.UpdateScoreBoard(muchInfo.whiteScore, muchInfo.blackScore, false);
 
-            if (core.NumberOfPieces() >= 5)//FieldSetting.NumberOfPieces)
+            if (core.NumberOfPieces() >= TermsEndTurn || (Mathf.Abs(core.CountScore(Color.black)-core.CountScore(Color.white)) >= TermsEndScoreDifference && TermsEndScoreDifference != 0))//FieldSetting.NumberOfPieces)
             {
                 muchInfo.isGameEnd = true;
                 if (muchInfo.whiteScore > muchInfo.blackScore) ui.Lose();

@@ -12,8 +12,11 @@ EditorBuildSettings:
     path: "Assets/ThrowOthello/Scenes/\u7269\u7406\u30A8\u30F3\u30B8\u30F3\u8AA4\u5DEE\u30C6\u30B9\u30C8.unity"
     guid: 31ed5cd3fdd8b0c4094ca94945cd583c
   - enabled: 0
-    path: Assets/Oculus/VR/Scenes/ControllerModels.unity
-    guid: 39cfe7aa0a2d46c47994d8d0308ec663
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/ThrowOthello/Scenes/Title.unity
+    guid: 7395ea44940dfb84d9f25ad2ceb808a4
   - enabled: 1
     path: Assets/ThrowOthello/Scenes/NetworkTest.unity
     guid: 8efffa39c528f3f46a067ad6df178614
